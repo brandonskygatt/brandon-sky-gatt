@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brandon Sky Gatt</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #f8f7f4;
+  --black: #0d0d0d;
+  --acid: #ff6200;
+  --mid: #888;
+  --light: #e8e6e1;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--white); color: var(--black); font-family: 'Inter', sans-serif; font-weight: 300; cursor: none; overflow-x: hidden; }
+
+/* CURSOR */
+.cursor { width: 10px; height: 10px; background: var(--acid); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: multiply; }
+.cursor-ring { width: 36px; height: 36px; border: 1px solid var(--black); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: all 0.12s ease; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.08); }
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.08em; color: var(--black); text-decoration: none; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { color: var(--black); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5; transition: opacity 0.2s; }
+.nav-links a:hover { opacity: 1; }
+.nav-dot { width: 8px; height: 8px; background: var(--acid); border-radius: 50%; border: 1px solid var(--black); }
+
+/* HERO */
+.hero { min-height: 100vh; padding: 120px 40px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: end; position: relative; background: var(--white); }
+.hero-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 32px; opacity: 0; animation: fadeIn 0.6s ease forwards 0.2s; }
+.hero-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--black); }
+.hero-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 12vw, 10rem); line-height: 0.88; color: var(--black); opacity: 0; animation: fadeIn 0.8s ease forwards 0.4s; }
+.hero-name .acid { color: var(--acid); -webkit-text-stroke: 0px var(--black); }
+.hero-sub { margin-top: 36px; font-size: 0.9rem; line-height: 1.9; color: var(--mid); max-width: 420px; opacity: 0; animation: fadeIn 0.8s ease forwards 0.7s; }
+.hero-actions { display: flex; gap: 16px; margin-top: 44px; opacity: 0; animation: fadeIn 0.8s ease forwards 0.9s; }
+.btn { display: inline-block; padding: 13px 32px; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: all 0.2s; }
+.btn-dark { background: var(--black); color: var(--white); }
+.btn-dark:hover { background: #333; }
+.btn-ghost { border: 1px solid var(--black); color: var(--black); }
+.btn-ghost:hover { background: var(--black); color: var(--white); }
+
+.hero-right { position: relative; min-height: 70vh; display: flex; flex-direction: column; justify-content: flex-end; padding-left: 48px; border-left: 1px solid rgba(0,0,0,0.1); padding-bottom: 60px; }
+.hero-photo-box { width: 100%; aspect-ratio: 3/4; background: var(--light); position: relative; overflow: hidden; max-height: 62vh; }
+.hero-photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-photo-placeholder { width: 100%; height: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: var(--mid); background: var(--light); }
+.hero-photo-placeholder span { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.hero-sticker { position: absolute; top: -16px; right: -16px; width: 96px; height: 96px; background: var(--acid); border: 2px solid var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.55rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.4; padding: 12px; animation: spin 12s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.hero-stats { margin-top: 24px; display: flex; gap: 32px; }
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat-n { font-family: 'Instrument Serif', serif; font-size: 1.8rem; color: var(--black); }
+.stat-l { font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+
+/* MARQUEE */
+.marquee-bar { background: var(--black); padding: 14px 0; overflow: hidden; white-space: nowrap; }
+.marquee-inner { display: inline-flex; animation: marquee 20s linear infinite; }
+.marquee-inner span { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.15em; color: var(--acid); padding: 0 28px; }
+.marquee-inner .dot { color: rgba(255,255,255,0.3); padding: 0 4px; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ABOUT */
+#about { padding: 120px 40px; display: grid; grid-template-columns: 260px 1fr; gap: 80px; background: var(--white); border-top: 1px solid rgba(0,0,0,0.08); }
+.section-num { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: var(--light); line-height: 1; }
+.section-label-sm { font-size: 0.67rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+.section-title-lg { font-family: 'Instrument Serif', serif; font-size: clamp(2.2rem, 3.5vw, 3.2rem); font-weight: 400; line-height: 1.15; color: var(--black); }
+.section-title-lg em { font-style: italic; color: var(--mid); }
+.about-body p { font-size: 0.93rem; line-height: 1.95; color: #444; margin-bottom: 22px; max-width: 620px; }
+.about-body p strong { color: var(--black); font-weight: 500; }
+.pull-quote { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 1.25rem; line-height: 1.55; color: var(--black); border-left: 3px solid var(--acid); padding-left: 24px; margin: 36px 0; max-width: 520px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.tag { display: inline-block; padding: 6px 16px; border: 1px solid rgba(0,0,0,0.12); font-size: 0.67rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); border-radius: 100px; }
+
+/* SKILLS */
+#skills { padding: 120px 40px; background: var(--black); color: var(--white); }
+.skills-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 28px; }
+.skills-big-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; }
+.skills-big-title .acid { color: var(--acid); }
+.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.06); }
+.skill-card { background: var(--black); padding: 48px 32px; transition: background 0.3s; }
+.skill-card:hover { background: #161616; }
+.skill-num-sm { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; color: var(--acid); letter-spacing: 0.1em; margin-bottom: 20px; display: block; }
+.skill-heading { font-family: 'Instrument Serif', serif; font-size: 1.45rem; color: var(--white); margin-bottom: 22px; line-height: 1.2; }
+.skill-items { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.skill-items li { font-size: 0.81rem; color: rgba(255,255,255,0.48); line-height: 1.5; padding-left: 16px; position: relative; }
+.skill-items li::before { content: '·'; position: absolute; left: 0; color: var(--acid); font-size: 1.2rem; line-height: 1; top: 1px; }
+
+/* EXPERIENCE */
+#experience { padding: 120px 40px; background: var(--white); }
+.exp-header { display: grid; grid-template-columns: 260px 1fr; gap: 80px; margin-bottom: 72px; }
+.exp-item { display: grid; grid-template-columns: 160px 1fr; gap: 40px; padding: 40px 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
+.exp-item:first-child { border-top: 1px solid rgba(0,0,0,0.07); }
+.exp-year { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); padding-top: 6px; }
+.exp-role { font-family: 'Instrument Serif', serif; font-size: 1.35rem; color: var(--black); margin-bottom: 6px; }
+.exp-place { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acid); background: var(--black); display: inline-block; padding: 3px 10px; margin-bottom: 14px; }
+.exp-text { font-size: 0.87rem; line-height: 1.85; color: #555; max-width: 560px; }
+
+/* EVIDENCE */
+#evidence { padding: 120px 40px; background: var(--light); }
+.evidence-header { margin-bottom: 56px; }
+.evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.ev-card { background: var(--white); padding: 36px 28px; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+.ev-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--acid); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+.ev-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,0,0,0.07); }
+.ev-card:hover::after { transform: scaleX(1); }
+.ev-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--light); line-height: 1; margin-bottom: 12px; display: block; }
+.ev-title { font-family: 'Instrument Serif', serif; font-size: 1.2rem; color: var(--black); margin-bottom: 10px; }
+.ev-photo { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; margin-bottom: 16px; background: var(--light); }
+.ev-photo-ph { width: 100%; aspect-ratio: 16/9; background: var(--light); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+.ev-desc { font-size: 0.81rem; line-height: 1.75; color: #666; margin-bottom: 20px; }
+.ev-link { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--black); text-decoration: none; border-bottom: 2px solid var(--acid); padding-bottom: 2px; transition: color 0.2s; }
+.ev-link:hover { color: #555; }
+
+/* VIDEO */
+#video { padding: 120px 40px; background: var(--black); color: var(--white); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.video-tag { font-size: 0.67rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--acid); margin-bottom: 20px; display: block; }
+.video-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 0.92; margin-bottom: 28px; }
+.video-desc { font-size: 0.87rem; line-height: 1.85; color: rgba(255,255,255,0.45); }
+.video-frame { position: relative; width: 100%; padding-bottom: 56.25%; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.07); overflow: hidden; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+.video-ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.play-btn { width: 72px; height: 72px; border: 1px solid rgba(200,255,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.play-btn::after { content: '▶'; color: var(--acid); font-size: 1.3rem; margin-left: 5px; }
+.video-ph p { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+
+/* CONNECT */
+#connect { padding: 120px 40px; background: var(--white); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.connect-label { font-size: 0.67rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+.connect-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 7vw, 6rem); line-height: 0.9; color: var(--black); margin-bottom: 28px; }
+.connect-title .grey { color: var(--mid); }
+.connect-email-big { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(1rem, 1.8vw, 1.3rem); color: var(--black); text-decoration: none; border-bottom: 2px solid var(--acid); padding-bottom: 4px; display: inline-block; margin-bottom: 36px; transition: color 0.2s; }
+.connect-email-big:hover { color: #555; }
+.connect-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
+.info-label { font-size: 0.67rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+.info-val { font-size: 0.86rem; color: var(--black); }
+
+/* FOOTER */
+footer { background: var(--black); color: var(--white); padding: 26px 40px; display: flex; justify-content: space-between; align-items: center; }
+footer p { font-size: 0.67rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.28); }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em; color: var(--acid); }
+
+/* ANIM */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; }
+  .hero-right { border-left: none; padding-left: 0; min-height: auto; }
+  #about { grid-template-columns: 1fr; padding: 80px 20px; }
+  .exp-header { grid-template-columns: 1fr; gap: 20px; }
+  .exp-item { grid-template-columns: 1fr; gap: 8px; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .evidence-grid { grid-template-columns: 1fr; }
+  #video { grid-template-columns: 1fr; padding: 80px 20px; }
+  #connect { grid-template-columns: 1fr; padding: 80px 20px; }
+  #skills, #experience, #evidence { padding: 80px 20px; }
+  footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
+  .cursor, .cursor-ring { display: none; }
+  body { cursor: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo">BSG</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#evidence">Evidence</a></li>
+    <li><a href="#video">Pitch</a></li>
+    <li><a href="#connect">Contact</a></li>
+  </ul>
+  <div class="nav-dot"></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag">Exercise Scientist · Filmmaker · Aspiring Physiotherapist</p>
+    <h1 class="hero-name">BRANDON<br><span class="acid">SKY</span><br>GATT</h1>
+    <p class="hero-sub">Third-year Exercise and Sport Science student at Swinburne University. I combine documentary filmmaking, international healthcare experience, and a passion for human movement to build a career in physiotherapy.</p>
+    <div class="hero-actions">
+      <a href="#about" class="btn btn-dark">My Story</a>
+      <a href="https://www.linkedin.com/in/brandon-gatt-7042952b9/" target="_blank" class="btn btn-ghost">LinkedIn</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-box">
+      <img src="images/img2.jpg" alt="Brandon Sky Gatt filming surgery in Indonesia" style="width:100%;height:100%;object-fit:cover;object-position:right center;display:block;">
+      <div class="hero-sticker">Exercise · Science · Film · Physio</div></div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-n">3rd</span><span class="stat-l">Year Student</span></div>
+      <div class="stat"><span class="stat-n">2+</span><span class="stat-l">Mission Trips</span></div>
+      <div class="stat"><span class="stat-n">5+</span><span class="stat-l">Yrs Experience</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-inner">
+    <span>Exercise Science</span><span class="dot">·</span><span>Physiotherapy</span><span class="dot">·</span><span>Documentary Film</span><span class="dot">·</span><span>Kieser Sandringham</span><span class="dot">·</span><span>Swinburne University</span><span class="dot">·</span><span>Indonesia · Sri Lanka</span><span class="dot">·</span><span>Bottega Veneta</span><span class="dot">·</span><span>Human Movement</span><span class="dot">·</span><span>Exercise Science</span><span class="dot">·</span><span>Physiotherapy</span><span class="dot">·</span><span>Documentary Film</span><span class="dot">·</span><span>Kieser Sandringham</span><span class="dot">·</span><span>Swinburne University</span><span class="dot">·</span><span>Indonesia · Sri Lanka</span><span class="dot">·</span><span>Bottega Veneta</span><span class="dot">·</span><span>Human Movement</span><span class="dot">·</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-sidebar reveal">
+    <div class="section-num">01</div>
+    <p class="section-label-sm">About Me</p>
+    <h2 class="section-title-lg">A story built<br>on <em>people</em></h2>
+    <div style="margin-top:40px;display:flex;flex-direction:column;gap:2px;">
+      <div style="background:var(--black);color:var(--white);padding:20px 18px;">
+        <div style="font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#ff6200;margin-bottom:6px;">Currently</div>
+        <div style="font-size:0.85rem;line-height:1.5;">Clinical Placement<br>Kieser Sandringham</div>
+      </div>
+      <div style="background:var(--light);padding:20px 18px;">
+        <div style="font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;">Degree</div>
+        <div style="font-size:0.85rem;line-height:1.5;">Bachelor of Exercise<br>&amp; Sport Science</div>
+      </div>
+      <div style="background:var(--black);color:var(--white);padding:20px 18px;">
+        <div style="font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#ff6200;margin-bottom:6px;">Goal</div>
+        <div style="font-size:0.85rem;line-height:1.5;">Physiotherapist</div>
+      </div>
+      <div style="background:#ff6200;padding:20px 18px;">
+        <div style="font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--black);margin-bottom:6px;">Mission Trips</div>
+        <div style="font-size:0.85rem;line-height:1.5;color:var(--black);font-weight:500;">Indonesia · Sri Lanka<br>India (upcoming)</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-body reveal">
+    <p>I am a third-year <strong>Bachelor of Exercise and Sport Science</strong> student at Swinburne University of Technology, working toward a career in physiotherapy.</p>
+    <p>Before exercise science, I studied <strong>Screen Production at Swinburne</strong>, completing units in photography, film editing, and sound recording. I then pursued an independent career in film — directing music videos, short films, documentaries, and acting in various productions. Most recently I produced a short film following a professional bodybuilder, exploring human performance, discipline, and athlete psychology.</p>
+    <div class="pull-quote">"My mother is a physiotherapist. Watching her work — the way she listens, diagnoses, and genuinely changes people's lives — is the greatest inspiration for my career."</div>
+    <p>I have completed mission trips to <strong>Indonesia and Sri Lanka</strong>, shadowing physiotherapists and doctors in underserved communities. In Manado, I documented a cleft lip and palate surgery. These experiences gave me a real-world perspective on healthcare that no classroom can replicate. I am planning a third trip to India.</p>
+    <p>I currently work as a <strong>Client Advisor at Bottega Veneta</strong>, one of the world's leading luxury fashion houses. This role demands precision in communication, deep client relationship management, and the ability to connect with people from every background — skills that transfer directly into patient-facing healthcare.</p>
+    <p>I am on <strong>clinical placement at Kieser Sandringham</strong>, working alongside physiotherapists, exercise physiologists, and exercise scientists. My long-term goal is to become a Physiotherapist, combining clinical practice with media to make health education more accessible to those who need it most.</p>
+    <div class="tags">
+      <span class="tag">Exercise Prescription</span>
+      <span class="tag">Clinical Placement</span>
+      <span class="tag">Documentary Film</span>
+      <span class="tag">Client Relations</span>
+      <span class="tag">Cross-cultural Communication</span>
+      <span class="tag">Human Performance</span>
+      <span class="tag">Physiotherapy</span>
+      <span class="tag">Health Education</span>
+    </div>
+  </div>
+</section>
+
+<!-- BREAK BANNER -->
+<div style="background:var(--black);padding:60px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background-color:var(--black);">
+  <div style="padding:40px 32px;border-right:1px solid rgba(255,255,255,0.08);">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:#ff6200;line-height:1;">3rd</div>
+    <div style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:8px;">Year Exercise Science Student</div>
+  </div>
+  <div style="padding:40px 32px;border-right:1px solid rgba(255,255,255,0.08);">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:#ff6200;line-height:1;">2+</div>
+    <div style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:8px;">International Mission Trips</div>
+  </div>
+  <div style="padding:40px 32px;border-right:1px solid rgba(255,255,255,0.08);">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:#ff6200;line-height:1;">5+</div>
+    <div style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:8px;">Years Client-Facing Experience</div>
+  </div>
+  <div style="padding:40px 32px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:#ff6200;line-height:1;">6</div>
+    <div style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:8px;">Pieces of Evidence on This Site</div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="skills-header reveal">
+    <h2 class="skills-big-title">SKILLS &amp;<br><span class="acid">ATTRIBUTES</span></h2>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.35);max-width:260px;line-height:1.8;">What I bring to exercise science, healthcare, and every client interaction.</p>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <span class="skill-num-sm">01 — Exercise Science</span>
+      <h3 class="skill-heading">Clinical &amp;<br>Technical Skills</h3>
+      <ul class="skill-items">
+        <li>Pre-exercise health screening (APSS)</li>
+        <li>Resting and exercise HR and BP assessment</li>
+        <li>Anthropometric measurement (BMI, girths, skinfolds)</li>
+        <li>Fitness testing across strength, speed, and flexibility</li>
+        <li>Exercise prescription for healthy adult populations</li>
+        <li>Kieser single-set to MMF model, Introduction Sessions 1-7</li>
+        <li>ESSA scope of practice for AES</li>
+        <li>Current First Aid and CPR certification</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-num-sm">02 — Interpersonal</span>
+      <h3 class="skill-heading">People &amp;<br>Communication</h3>
+      <ul class="skill-items">
+        <li>Client relationship management at luxury retail level</li>
+        <li>Clear and confident one-on-one communication</li>
+        <li>Active listening and patient education</li>
+        <li>Cross-cultural communication across Indonesia, Sri Lanka, and Australia</li>
+        <li>Professional presentation and conduct</li>
+        <li>Team collaboration in multidisciplinary clinical settings</li>
+        <li>Directing and managing talent on film sets</li>
+      </ul>
+    </div>
+    <div class="skill-card reveal">
+      <span class="skill-num-sm">03 — Media &amp; Film</span>
+      <h3 class="skill-heading">Storytelling &amp;<br>Production</h3>
+      <ul class="skill-items">
+        <li>Documentary filmmaking and direction</li>
+        <li>Music video and short film production</li>
+        <li>Photography, film editing, and sound recording</li>
+        <li>Script writing and storyboarding</li>
+        <li>Adobe Creative Suite</li>
+        <li>Acting and on-screen performance</li>
+        <li>Health education content creation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="background:var(--white);">
+  <div class="exp-header">
+    <div class="reveal visible">
+      <div class="section-num">02</div>
+      <p class="section-label-sm">Background</p>
+    </div>
+    <div class="reveal visible">
+      <h2 class="section-title-lg">Experience &amp;<br><em>Education</em></h2>
+    </div>
+  </div>
+  <div class="exp-item reveal">
+    <div class="exp-year">2024 — Present</div>
+    <div>
+      <h3 class="exp-role">Clinical Placement</h3>
+      <span class="exp-place">Kieser Sandringham</span>
+      <p class="exp-text">Completing supervised clinical placement at Kieser Sandringham, an evidence-based strength training facility. Working alongside physiotherapists, exercise physiologists, and exercise scientists to deliver Introduction Sessions, observe client assessments, and apply exercise prescription within Kieser's single-set to MMF model.</p>
+    </div>
+  </div>
+  <div class="exp-item reveal">
+    <div class="exp-year">2022 — Present</div>
+    <div>
+      <h3 class="exp-role">Client Advisor</h3>
+      <span class="exp-place">Bottega Veneta</span>
+      <p class="exp-text">Work directly with an international client base at one of the world's leading luxury fashion houses. Demands exceptional interpersonal skill, precision in communication, and the ability to build lasting client relationships — skills that transfer directly into patient-facing healthcare.</p>
+    </div>
+  </div>
+  <div class="exp-item reveal">
+    <div class="exp-year">2023 &amp; 2024</div>
+    <div>
+      <h3 class="exp-role">Volunteer, Mission Trips</h3>
+      <span class="exp-place">Indonesia &amp; Sri Lanka</span>
+      <p class="exp-text">Participated in two international mission trips, shadowing physiotherapists and doctors in underserved communities. Observed a cleft lip and palate surgery in Manado, Indonesia, and documented the experience on film. Gained direct exposure to rehabilitation practice, cross-cultural patient communication, and healthcare in resource-limited settings. Planning a third trip to India.</p>
+    </div>
+  </div>
+  <div class="exp-item reveal">
+    <div class="exp-year">2019 — 2023</div>
+    <div>
+      <h3 class="exp-role">Independent Filmmaker</h3>
+      <span class="exp-place">Film · Music Videos · Documentaries · Acting</span>
+      <p class="exp-text">Directed and produced documentary work, music videos, and short films, and acted in various productions. Most recently produced a short documentary following a professional bodybuilder. Built on foundational skills from studying Screen Production at Swinburne University, including photography, editing, and sound recording.</p>
+    </div>
+  </div>
+  <div class="exp-item reveal">
+    <div class="exp-year">2017</div>
+    <div>
+      <h3 class="exp-role">Physical Therapy Workshop</h3>
+      <span class="exp-place">Kyungham University · Melbourne University</span>
+      <p class="exp-text">Attended a physical therapy health and welfare training workshop including cadaveric study. Instilled a deep respect for human anatomy and confirmed my interest in physiotherapy from a young age.</p>
+    </div>
+  </div>
+  <div class="exp-item reveal">
+    <div class="exp-year">2022 — Present</div>
+    <div>
+      <h3 class="exp-role">Bachelor of Exercise &amp; Sport Science</h3>
+      <span class="exp-place">Swinburne University of Technology</span>
+      <p class="exp-text">Third year, studying human anatomy, physiology, exercise prescription, biomechanics, and sports psychology. Completing industry placement units alongside core science subjects. Building toward postgraduate entry into physiotherapy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE BREAK -->
+<div style="background:#ff6200;padding:80px 40px;text-align:center;">
+  <p style="font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(1.4rem,3vw,2.2rem);color:var(--black);max-width:800px;margin:0 auto;line-height:1.5;">"I want to work at the intersection of rehabilitation, performance, and education — combining clinical practice with media to make health knowledge more accessible to those who need it most."</p>
+  <p style="font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(0,0,0,0.5);margin-top:24px;">Brandon Sky Gatt</p>
+</div>
+
+<!-- EVIDENCE -->
+<section id="evidence">
+  <div class="evidence-header reveal">
+    <div class="section-num" style="color:rgba(0,0,0,0.07)">03</div>
+    <p class="section-label-sm">Supporting Evidence</p>
+    <h2 class="section-title-lg">Proof of <em>Practice</em></h2>
+  </div>
+  <div class="evidence-grid">
+    <div class="ev-card reveal">
+      <span class="ev-num">01</span>
+      <img src="images/img2.jpg" alt="Brandon Gatt filming cleft lip surgery in Indonesia" class="ev-photo">
+      <h3 class="ev-title">Filming Surgery — Indonesia</h3>
+      <p class="ev-desc">Inside the operating theatre in Manado, Indonesia, documenting a cleft lip and palate surgery in surgical scrubs with a professional camera rig. The experience that solidified my path toward physiotherapy.</p>
+      <a href="#" class="ev-link">View Gallery →</a>
+    </div>
+    <div class="ev-card reveal">
+      <span class="ev-num">02</span>
+      <img src="images/img3.jpg" alt="Cinematic still from bodybuilder documentary" class="ev-photo">
+      <h3 class="ev-title">Bodybuilder Documentary</h3>
+      <p class="ev-desc">A short film exploring human performance, discipline, and athlete psychology. Shot and directed independently — combining exercise science knowledge with professional filmmaking to tell a story about the human body.</p>
+      <a href="#" class="ev-link">Watch Film →</a>
+    </div>
+    <div class="ev-card reveal">
+      <span class="ev-num">05</span>
+      <img src="images/img4.jpg" alt="Brandon Gatt on set directing" class="ev-photo">
+      <h3 class="ev-title">On Set — Independent Film Production</h3>
+      <p class="ev-desc">Behind the monitor during a short film production. Evidence of professional-level filmmaking — direction, camera operation, and on-set leadership — skills that transfer directly into healthcare communication and education.</p>
+      <a href="#" class="ev-link">View LinkedIn →</a>
+    </div>
+    <div class="ev-card reveal">
+      <span class="ev-num">03</span>
+      <img src="images/img5.jpg" alt="Physical therapy workshop at Melbourne University" class="ev-photo">
+      <h3 class="ev-title">Physical Therapy Workshop — Melbourne University</h3>
+      <p class="ev-desc">Attended a physical therapy health and welfare workshop hosted by Kyungham University at Melbourne University in 2017, including cadaveric study. My first formal exposure to physiotherapy — the experience that set my career direction.</p>
+      <a href="#" class="ev-link">View Experience →</a>
+    </div>
+    <div class="ev-card reveal">
+      <span class="ev-num">04</span>
+      <img src="images/img6.jpg" alt="First Aid and CPR Certificate - Brandon Gatt" class="ev-photo">
+      <h3 class="ev-title">First Aid &amp; CPR Certification</h3>
+      <p class="ev-desc">Nationally recognised First Aid (HLTAID011), Basic Emergency Life Support (HLTAID010), and CPR (HLTAID009) certification. Completed October 2025 through Firstaidpro Australia.</p>
+      <a href="#" class="ev-link">View Certificate →</a>
+    </div>
+
+    <div class="ev-card reveal">
+      <span class="ev-num">06</span>
+      <img src="images/img7.jpg" alt="Physiotherapist treating a patient in Sri Lanka" class="ev-photo">
+      <h3 class="ev-title">The Inspiration — Sri Lanka</h3>
+      <p class="ev-desc">My mother, a physiotherapist, treating a patient during a mission trip to Sri Lanka. Watching her work in underserved communities is what drives my commitment to pursuing physiotherapy as a career.</p>
+      <a href="#" class="ev-link">Read My Story →</a>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section id="video">
+  <div class="reveal visible">
+    <span class="video-tag">Elevator Pitch</span>
+    <h2 class="video-title">MEET<br>BRANDON<br>SKY GATT</h2>
+    <p class="video-desc">A 60-second introduction to who I am, what I bring to exercise science and physiotherapy, and what makes my path different.</p>
+  </div>
+  <div class="reveal visible">
+    <div class="video-frame">
+      <iframe src="https://www.youtube.com/embed/xurq5lyuKCQ" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <div class="reveal visible">
+    <p class="connect-label">Get In Touch</p>
+    <h2 class="connect-title">LET'S<br><span class="grey">CONNECT</span></h2>
+    <a href="/cdn-cgi/l/email-protection#bfddcdded1dbd0d1ccd4c6d8decbcbffd8d2ded6d391dcd0d2" class="connect-email-big"><span class="__cf_email__" data-cfemail="c5a7b7a4aba1aaabb6aebca2a4b1b185a2a8a4aca9eba6aaa8">[email&#160;protected]</span></a>
+    <div class="connect-btns">
+      <a href="https://www.linkedin.com/in/brandon-gatt-7042952b9/" target="_blank" class="btn btn-dark">LinkedIn</a>
+      <a href="/cdn-cgi/l/email-protection#3654445758525958455d4f5157424276515b575f5a1855595b" class="btn btn-ghost">Email Me</a>
+    </div>
+  </div>
+  <div class="reveal visible">
+    <div class="info-row"><span class="info-label">Degree</span><span class="info-val">Bachelor of Exercise &amp; Sport Science</span></div>
+    <div class="info-row"><span class="info-label">University</span><span class="info-val">Swinburne University of Technology</span></div>
+    <div class="info-row"><span class="info-label">Currently</span><span class="info-val">Clinical Placement, Kieser Sandringham</span></div>
+    <div class="info-row"><span class="info-label">Career Goal</span><span class="info-val">Physiotherapist</span></div>
+    <div class="info-row"><span class="info-label">Email</span><span class="info-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="016373606f656e6f726a786660757541666c60686d2f626e6c">[email&#160;protected]</a></span></div>
+    <div class="info-row"><span class="info-label">Open To</span><span class="info-val">Casual work, volunteering, shadowing</span></div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">BSG</span>
+  <p>© 2026 Brandon Sky Gatt · Exercise &amp; Sport Science</p>
+  <p>Swinburne University of Technology</p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 5 + 'px';
+  cursor.style.top = my - 5 + 'px';
+});
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.sty
